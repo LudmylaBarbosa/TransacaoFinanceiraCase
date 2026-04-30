@@ -9,9 +9,12 @@ class ContaRepositoryInterface(ABC):
 
     @abstractmethod
     def buscar_por_numero(self, numero: str) -> Optional[Conta]:
+        pass
 
     @abstractmethod
     def atualizar(self, conta: Conta) -> bool:
-
+        pass
+        
     @abstractmethod
     def listar_todas(self) -> list:
+        pass
