@@ -9,26 +9,16 @@ from exceptions.exceptions import SaldoInsuficienteError
 
 
 class TransacaoService:
-    """Servico responsavel pela execucao de transacoes financeiras.
-
-    Utiliza lock para garantir atomicidade das operacoes em contexto
-    de execucao paralela, evitando race conditions nos saldos.
-    """
 
     def __init__(self, repositorio: ContaRepositoryInterface) -> None:
         self._repositorio = repositorio
         self._lock = threading.Lock()
 
     def transferir(self, transacao: Transacao) -> ResultadoTransacao:
-        """Executa uma transferencia entre duas contas.
-
-        Retorna um ResultadoTransacao com o status e mensagem da operacao.
-        """
         with self._lock:
             return self._executar_transferencia(transacao)
 
     def _executar_transferencia(self, transacao: Transacao) -> ResultadoTransacao:
-        """Logica interna de transferencia, executada dentro do lock."""
         try:
             conta_origem = self._obter_conta(
                 transacao.conta_origem
@@ -68,14 +58,12 @@ class TransacaoService:
             )
 
     def _obter_conta(self, numero_conta: str):
-        """Busca uma conta no repositorio. Lanca excecao se nao encontrada."""
         conta = self._repositorio.buscar_por_numero(numero_conta)
         if conta is None:
             raise ContaNaoEncontradaError(numero_conta)
         return conta
 
     def _validar_saldo(self, transacao: Transacao) -> None:
-        """Valida se a conta de origem possui saldo suficiente."""
         conta_origem = self._repositorio.buscar_por_numero(transacao.conta_origem)
         if not conta_origem.possui_saldo_suficiente(transacao.valor):
             raise SaldoInsuficienteError(
@@ -87,7 +75,6 @@ class TransacaoService:
     def _criar_resultado_cancelado(
         self, correlation_id: int, erro: Exception
     ) -> ResultadoTransacao:
-        """Cria um resultado de transacao cancelada a partir de uma excecao."""
         if isinstance(erro, SaldoInsuficienteError):
             status = StatusTransacao.CANCELADA_SALDO_INSUFICIENTE
         else:
