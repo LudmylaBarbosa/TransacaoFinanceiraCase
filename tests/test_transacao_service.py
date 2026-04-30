@@ -9,7 +9,6 @@ from services.transacao_service import TransacaoService
 
 
 def _criar_transacao(correlation_id, origem, destino, valor):
-    """Helper para criar transacoes de teste."""
     return Transacao(
         correlation_id=correlation_id,
         data_hora="01/01/2024 00:00:00",
@@ -129,7 +128,6 @@ class TestTransacaoServiceTransferirFalha:
 
 class TestTransacaoServiceInjecaoDependencia:
     def test_aceita_qualquer_implementacao_de_repositorio(self):
-        """Verifica que o servico funciona com qualquer repositorio (DIP)."""
         repositorio_mock = MagicMock()
 
         conta = Conta(numero="100", saldo=Decimal("500"))
