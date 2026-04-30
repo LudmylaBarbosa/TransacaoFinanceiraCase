@@ -3,7 +3,6 @@ from enum import Enum
 
 
 class StatusTransacao(Enum):
-    """Enum que representa os possiveis status de uma transacao."""
 
     EFETIVADA = "efetivada"
     CANCELADA_SALDO_INSUFICIENTE = "cancelada_saldo_insuficiente"
@@ -13,7 +12,6 @@ class StatusTransacao(Enum):
 
 @dataclass(frozen=True)
 class ResultadoTransacao:
-    """Resultado imutavel de uma transacao financeira."""
 
     correlation_id: int
     status: StatusTransacao
@@ -21,5 +19,4 @@ class ResultadoTransacao:
 
     @property
     def sucesso(self) -> bool:
-        """Retorna True se a transacao foi efetivada com sucesso."""
         return self.status == StatusTransacao.EFETIVADA
