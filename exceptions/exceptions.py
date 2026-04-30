@@ -1,6 +1,6 @@
-class TransacaoFinanceiraError(Exception):
-
-
+class TransacaoFinanceiraError(Exception):    
+    pass
+    
 class SaldoInsuficienteError(TransacaoFinanceiraError):
     def __init__(self, conta: int, saldo_atual, valor_solicitado) -> None:
         self.conta = conta
