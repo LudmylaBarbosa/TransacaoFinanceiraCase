@@ -8,7 +8,6 @@ from services.transacao_service import TransacaoService
 
 
 def _criar_transacao(correlation_id: int, origem: str, destino: str, valor: str):
-    """Helper para criar transacoes de teste."""
     return Transacao(
         correlation_id=correlation_id,
         data_hora="01/01/2024 00:00:00",
@@ -20,11 +19,6 @@ def _criar_transacao(correlation_id: int, origem: str, destino: str, valor: str)
 
 class TestConcorrenciaRaceCondition:
     def test_transferencias_paralelas_mesma_conta_origem(self):
-        """Verifica que o lock impede race condition ao debitar a mesma conta.
-
-        Conta 100 tem saldo 180. Duas transferências de 150 são submetidas
-        em paralelo. Apenas uma deve ter sucesso (180 >= 150, mas 30 < 150).
-        """
         contas = [
             Conta(numero="100", saldo=Decimal("180")),
             Conta(numero="200", saldo=Decimal("0")),
@@ -57,7 +51,6 @@ class TestConcorrenciaRaceCondition:
 
 
     def test_transferencias_paralelas_contas_diferentes(self):
-        """Transferencias em contas distintas devem todas ter sucesso."""
         contas = [
             Conta(numero="100", saldo=Decimal("500")),
             Conta(numero="200", saldo=Decimal("500")),
@@ -86,11 +79,6 @@ class TestConcorrenciaRaceCondition:
 
 
     def test_cenario_completo_oito_transacoes(self):
-        """Simula o cenario do codigo original com todas as 8 transacoes.
-
-        Valida que a soma total dos saldos e preservada (nenhum dinheiro
-        e criado ou destruido), independente da ordem de execucao.
-        """
         contas = [
             Conta(numero="938485762", saldo=Decimal("180")),
             Conta(numero="347586970", saldo=Decimal("1200")),
@@ -129,7 +117,6 @@ class TestConcorrenciaRaceCondition:
         soma_final = sum(c.saldo for c in repositorio.listar_todas())
 
         assert soma_final == soma_inicial, (
-            "A soma total dos saldos deve ser preservada"
         )
 
         efetivadas = [r for r in resultados if r.sucesso]
@@ -139,7 +126,6 @@ class TestConcorrenciaRaceCondition:
 
 
     def test_muitas_transferencias_paralelas_saldo_nao_fica_negativo(self):
-        """Estresse: 20 threads tentam debitar a mesma conta."""
         contas = [
             Conta(numero="100", saldo=Decimal("100")),
             Conta(numero="200", saldo=Decimal("0")),
