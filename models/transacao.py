@@ -4,7 +4,6 @@ from decimal import Decimal
 
 @dataclass(frozen=True)
 class Transacao:
-    "Modelo imutavel que representa uma transacao finaceira"
     
     correlation_id: int
     data_hora: str
